@@ -2,6 +2,14 @@ FROM nginx:latest
 
 COPY nginx.conf /etc/nginx/nginx.conf
 
-COPY maintenance.html /var/www/nginx-default/maintenance.html
+RUN apt-get update && apt-get -y install python python-pip
 
-ENTRYPOINT ["nginx"]
+RUN pip install awscli
+
+ADD ./entrypoint.sh /app/docker/entrypoint.sh
+
+RUN chmod +x /app/docker/entrypoint.sh
+
+COPY maintenance.html /app/docker/maintenance.html
+
+ENTRYPOINT ["/app/docker/entrypoint.sh"]
